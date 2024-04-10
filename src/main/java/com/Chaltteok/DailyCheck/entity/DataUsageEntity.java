@@ -3,7 +3,6 @@ package com.Chaltteok.DailyCheck.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -11,15 +10,11 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ScheduleEntity {
+public class DataUsageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="schedule_id", unique = true, nullable = false)
+    @Column(name="datausage_id", unique = true, nullable = false)
     private int id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id")
-    private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="senior_id")
@@ -29,8 +24,15 @@ public class ScheduleEntity {
     private Date date;
 
     @Column(length = 15, nullable = false)
-    private int orderNum;
+    private int phoneUsage;
 
-    @Column(length = 20, nullable = false)
-    private LocalDateTime scheduleTime;
+    @Column(length = 15, nullable = false)
+    private int waterUsage;
+
+    @Column(length = 15, nullable = false)
+    private int elecUsage;
+
+    @Column(length = 15, nullable = false)
+    private String status;
+// 노인 id, 날짜, 폰, 수도, 전기 사용량, 오늘상태
 }
