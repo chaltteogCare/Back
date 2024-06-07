@@ -20,3 +20,8 @@ spring:
         hbm2ddl:
           auto: update
         default_batch_fetch_size: 1000
+
+jwt:
+  secret: AFSwiUt6sJjH7LFY0Uq8NmyEmG230577
+  tokenValidityInSeconds: 3600
+  refreshTokenValidityInSeconds: 700000

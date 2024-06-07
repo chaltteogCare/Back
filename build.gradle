@@ -36,6 +36,8 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
 	implementation 'org.slf4j:slf4j-api'
+	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+	implementation 'javax.servlet:javax.servlet-api:4.0.1'
 }
 
 tasks.named('test') {

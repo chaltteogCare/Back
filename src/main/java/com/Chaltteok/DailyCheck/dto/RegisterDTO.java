@@ -4,8 +4,7 @@ import com.Chaltteok.DailyCheck.entity.UserEntity;
 import lombok.*;
 import org.apache.catalina.User;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterDTO {

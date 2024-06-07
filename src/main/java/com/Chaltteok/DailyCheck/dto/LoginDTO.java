@@ -2,8 +2,7 @@ package com.Chaltteok.DailyCheck.dto;
 
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginDTO {
