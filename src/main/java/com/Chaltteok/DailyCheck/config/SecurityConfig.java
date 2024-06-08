@@ -1,5 +1,7 @@
 package com.Chaltteok.DailyCheck.config;
 
+import com.Chaltteok.DailyCheck.auth.JwtTokenFilter;
+import com.Chaltteok.DailyCheck.auth.JwtTokenProvider;
 import com.Chaltteok.DailyCheck.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -15,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -29,6 +32,8 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
     //private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserDetailsService userDetailsService;
 
     @Bean
     public WebSecurityCustomizer configure(){
@@ -39,16 +44,12 @@ public class SecurityConfig {
 
 
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf((csrf)->csrf.disable());
         http
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/register", "/swagger-resources/**","/api/hello").permitAll()
+                                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/api/**", "/swagger-resources/**","/api/hello").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(formLogin ->
@@ -59,7 +60,8 @@ public class SecurityConfig {
                 .logout(logout ->
                         logout
                                 .permitAll()
-                );
+                )
+                .addFilterBefore(new JwtTokenFilter(jwtTokenProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);;
 
 
         return http.build();

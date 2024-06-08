@@ -20,3 +20,7 @@ spring:
         hbm2ddl:
           auto: update
         default_batch_fetch_size: 1000
+
+  jwt:
+    secret: 64461f01e1af406da538b9c48d801ce59142452199ff112fb5404c8e7e98e3ff
+    expiration_time: 86400000

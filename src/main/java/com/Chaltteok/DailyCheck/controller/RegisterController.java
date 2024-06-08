@@ -1,9 +1,14 @@
 package com.Chaltteok.DailyCheck.controller;
 
+import com.Chaltteok.DailyCheck.dto.LoginDTO;
 import com.Chaltteok.DailyCheck.dto.RegisterDTO;
 import com.Chaltteok.DailyCheck.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 public class RegisterController {
     private final UserService userService;
 
@@ -20,5 +25,22 @@ public class RegisterController {
     public ResponseEntity<String> register(@RequestBody RegisterDTO registerDTO) {
         int userId = userService.save(registerDTO);
         return ResponseEntity.ok("User Id: "+userId);
+    }
+
+//    @PostMapping("/login")
+//    public ResponseEntity<String> getUserProfile(
+//            @Valid @RequestBody LoginDTO request
+//    ){
+//        String token = this.userService.login(request);
+//        return ResponseEntity.status(HttpStatus.OK).body(token);
+//    }
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
+        try {
+            String token = userService.login(loginDTO);
+            return ResponseEntity.ok("Bearer " + token);
+        } catch (UsernameNotFoundException | BadCredentialsException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+        }
     }
 }
