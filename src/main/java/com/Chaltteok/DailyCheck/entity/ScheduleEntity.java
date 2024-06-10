@@ -8,6 +8,7 @@ import java.util.Date;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -27,9 +28,6 @@ public class ScheduleEntity {
 
     @Column(length = 15, nullable = false)
     private Date date;
-
-    @Column(length = 15, nullable = false)
-    private int orderNum;
 
     @Column(length = 20, nullable = false)
     private LocalDateTime scheduleTime;
