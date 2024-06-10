@@ -16,8 +16,8 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ScheduleDTO {
-    private int userId;
-    private int seniorId;
+    private long userId;
+    private long seniorId;
     private Date date;
     private LocalDateTime scheduleTime;
 

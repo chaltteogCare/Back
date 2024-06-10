@@ -18,31 +18,31 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @GetMapping
-    public ResponseEntity<List<ScheduleEntity>> getAllSchedules(@RequestParam int userId) {
+    public ResponseEntity<List<ScheduleEntity>> getAllSchedules(@RequestParam long userId) {
         List<ScheduleEntity> schedules = scheduleService.getAllSchedules(userId);
         return ResponseEntity.ok(schedules);
     }
 
     @GetMapping("/{scheduleId}")
-    public ResponseEntity<ScheduleEntity> getSchedule(@PathVariable int scheduleId) {
+    public ResponseEntity<ScheduleEntity> getSchedule(@PathVariable long scheduleId) {
         ScheduleEntity schedule = scheduleService.getSchedule(scheduleId);
         return ResponseEntity.ok(schedule);
     }
 
     @PostMapping()
-    public ResponseEntity<ScheduleEntity> addSchedule(@RequestParam int userId, @RequestBody ScheduleDTO scheduleDTO) {
+    public ResponseEntity<ScheduleEntity> addSchedule(@RequestParam long userId, @RequestBody ScheduleDTO scheduleDTO) {
         ScheduleEntity newSchedule = scheduleService.addSchedule(userId,scheduleDTO);
         return ResponseEntity.ok(newSchedule);
     }
 
     @PutMapping("/{scheduleId}")
-    public ResponseEntity<ScheduleEntity> updateSchedule(@PathVariable int scheduleId, @RequestBody ScheduleEntity schedule) {
-        ScheduleEntity updatedSchedule = scheduleService.updateSchedule(scheduleId,schedule);
+    public ResponseEntity<ScheduleEntity> updateSchedule(@PathVariable long scheduleId, @RequestBody ScheduleDTO scheduleDTO) {
+        ScheduleEntity updatedSchedule = scheduleService.updateSchedule(scheduleId,scheduleDTO);
         return ResponseEntity.ok(updatedSchedule);
         }
 
     @DeleteMapping("/{scheduleId}")
-    public ResponseEntity<Void> deleteSchedule(@PathVariable int scheduleId) {
+    public ResponseEntity<Void> deleteSchedule(@PathVariable long scheduleId) {
         scheduleService.deleteSchedule(scheduleId);
         return ResponseEntity.noContent().build();
     }

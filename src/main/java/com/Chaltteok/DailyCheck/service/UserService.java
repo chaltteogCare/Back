@@ -20,7 +20,7 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public int save(RegisterDTO dto){
-        return userRepository.save(UserEntity.builder()
+        return (int) userRepository.save(UserEntity.builder()
                 .name(dto.getName())
                 .password(bCryptPasswordEncoder.encode(dto.getPassword()))
                 .address(dto.getAddress())
