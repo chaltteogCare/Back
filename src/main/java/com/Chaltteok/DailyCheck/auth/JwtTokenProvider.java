@@ -1,6 +1,7 @@
 package com.Chaltteok.DailyCheck.auth;
 
 import com.Chaltteok.DailyCheck.dto.LoginDTO;
+import com.Chaltteok.DailyCheck.exception.JwtValidationException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -63,14 +64,18 @@ public class JwtTokenProvider {
             return true;
         } catch (io.jsonwebtoken.security.SignatureException | MalformedJwtException e){
             log.info("Invalid JWT token", e);
+            throw new JwtValidationException("Invalid JWT token", e);
         } catch (ExpiredJwtException e){
             log.info("Expired JWT token", e);
+            throw new JwtValidationException("Invalid JWT token", e);
         } catch (UnsupportedJwtException e){
             log.info("Unsupported JWT token", e);
+            throw new JwtValidationException("Invalid JWT token", e);
         } catch (IllegalArgumentException e){
             log.info("JWT claims string is empty", e);
+            throw new JwtValidationException("Invalid JWT token", e);
         }
-        return false;
+        //return false;
     }
 
     public Claims parseClaims(String accessToken){

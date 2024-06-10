@@ -2,6 +2,7 @@ package com.Chaltteok.DailyCheck.controller;
 
 import com.Chaltteok.DailyCheck.dto.LoginDTO;
 import com.Chaltteok.DailyCheck.dto.RegisterDTO;
+import com.Chaltteok.DailyCheck.exception.JwtValidationException;
 import com.Chaltteok.DailyCheck.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/user")
-public class RegisterController {
+public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
@@ -27,13 +28,6 @@ public class RegisterController {
         return ResponseEntity.ok("User Id: "+userId);
     }
 
-//    @PostMapping("/login")
-//    public ResponseEntity<String> getUserProfile(
-//            @Valid @RequestBody LoginDTO request
-//    ){
-//        String token = this.userService.login(request);
-//        return ResponseEntity.status(HttpStatus.OK).body(token);
-//    }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
         try {
@@ -41,6 +35,8 @@ public class RegisterController {
             return ResponseEntity.ok("Bearer " + token);
         } catch (UsernameNotFoundException | BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+        } catch (JwtValidationException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
 }

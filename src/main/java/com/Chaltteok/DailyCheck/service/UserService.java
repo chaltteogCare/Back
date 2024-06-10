@@ -33,10 +33,10 @@ public class UserService {
         String password = dto.getPassword();
         UserEntity user = userRepository.findByName(name);
         if(user == null){
-            throw new UsernameNotFoundException("사람 없음~");
+            throw new UsernameNotFoundException("No User found with name: " + name);
         }
         if(!bCryptPasswordEncoder.matches(password, user.getPassword())){
-            throw new BadCredentialsException("비밀번호 틀림~");
+            throw new BadCredentialsException("Incorrect password");
         }
         String accessToken = jwtTokenProvider.createAccessToken(dto);
         return accessToken;
