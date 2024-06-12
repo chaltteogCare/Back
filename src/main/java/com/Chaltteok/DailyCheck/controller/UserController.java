@@ -2,6 +2,7 @@ package com.Chaltteok.DailyCheck.controller;
 
 import com.Chaltteok.DailyCheck.dto.LoginDTO;
 import com.Chaltteok.DailyCheck.dto.RegisterDTO;
+import com.Chaltteok.DailyCheck.dto.UserDTO;
 import com.Chaltteok.DailyCheck.exception.JwtValidationException;
 import com.Chaltteok.DailyCheck.service.UserService;
 import jakarta.validation.Valid;
@@ -11,10 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -24,7 +22,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterDTO registerDTO) {
-        int userId = userService.save(registerDTO);
+        long userId = userService.save(registerDTO);
         return ResponseEntity.ok("User Id: "+userId);
     }
 
@@ -38,5 +36,17 @@ public class UserController {
         } catch (JwtValidationException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<String> updateUser(@PathVariable long id, @RequestBody UserDTO userDTO) {
+        userService.update(id, userDTO);
+        return ResponseEntity.ok("User Id: "+id +" updated");
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable long id) {
+        userService.delete(id);
+        return ResponseEntity.ok("User Id: "+id + " deleted");
     }
 }
