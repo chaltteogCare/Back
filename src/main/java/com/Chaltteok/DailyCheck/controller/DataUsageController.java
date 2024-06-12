@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/data")
@@ -22,6 +24,18 @@ public class DataUsageController {
     public ResponseEntity<DataUsageDTO> getDataUsage(@PathVariable long id) {
         DataUsageDTO dataUsageDTO = dataUsageService.findById(id);
         return ResponseEntity.ok(dataUsageDTO);
+    }
+
+    @GetMapping("/senior/{seniorId}")
+    public ResponseEntity<List<DataUsageDTO>> getDataUsageBySeniorId(@PathVariable long seniorId) {
+        List<DataUsageDTO> dataUsages = dataUsageService.findBySeniorId(seniorId);
+        return ResponseEntity.ok(dataUsages);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<String> updateDataUsage(@PathVariable long id, @RequestBody DataUsageDTO dataUsageDTO) {
+        dataUsageService.update(id, dataUsageDTO);
+        return ResponseEntity.ok("Data usage record updated");
     }
 
     @DeleteMapping("/{id}")
