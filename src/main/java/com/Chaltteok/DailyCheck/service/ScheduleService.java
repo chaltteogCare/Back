@@ -54,8 +54,10 @@ public class ScheduleService {
         SeniorEntity senior = seniorRepository.findById(scheduleDTO.getSeniorId())
                 .orElseThrow(() -> new ResourceNotFoundException("Senior not found with id " + scheduleDTO.getSeniorId()));
 
-        ScheduleEntity NewSchedule = scheduleDTO.toEntity(user, senior);
-        return scheduleRepository.save(NewSchedule);
+        schedule.setSenior(seniorRepository.findById(scheduleDTO.getSeniorId()).orElseThrow(()->new ResourceNotFoundException("Senior not found with id" + scheduleDTO.getSeniorId())));
+        schedule.setDate(scheduleDTO.getDate());
+        schedule.setScheduleTime(scheduleDTO.getScheduleTime());
+        return scheduleRepository.save(schedule);
     }
 
     public void deleteSchedule(long scheduleId) {

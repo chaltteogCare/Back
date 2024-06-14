@@ -4,7 +4,6 @@ import com.Chaltteok.DailyCheck.dto.ScheduleDTO;
 import com.Chaltteok.DailyCheck.entity.ScheduleEntity;
 import com.Chaltteok.DailyCheck.service.ScheduleService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +34,7 @@ public class ScheduleController {
         return ResponseEntity.ok(newSchedule);
     }
 
-    @PutMapping("/{scheduleId}")
+    @PatchMapping("/{scheduleId}")
     public ResponseEntity<ScheduleEntity> updateSchedule(@PathVariable long scheduleId, @RequestBody ScheduleDTO scheduleDTO) {
         ScheduleEntity updatedSchedule = scheduleService.updateSchedule(scheduleId,scheduleDTO);
         return ResponseEntity.ok(updatedSchedule);

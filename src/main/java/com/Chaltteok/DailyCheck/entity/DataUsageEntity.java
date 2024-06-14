@@ -1,5 +1,6 @@
 package com.Chaltteok.DailyCheck.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,6 +11,7 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class DataUsageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
