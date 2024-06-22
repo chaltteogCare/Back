@@ -6,6 +6,7 @@ import lombok.*;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -23,6 +24,9 @@ public class SeniorEntity {
     @Column(length = 15, nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private int age;
+
     @Column(length = 100, nullable = false)
     private String address;
 
@@ -31,4 +35,7 @@ public class SeniorEntity {
 
     @Column(length = 100, nullable = false)
     private String notes;
+
+    @Column(length = 255)
+    private String photoUrl;
 }

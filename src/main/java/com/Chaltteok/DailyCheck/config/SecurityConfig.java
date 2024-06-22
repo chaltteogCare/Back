@@ -32,7 +32,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/api/hello", "/swagger-resources/**","/api/schedules/**").permitAll()
+                                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/api/hello", "/swagger-resources/**","/api/schedules/**", "/api/senior/**","/api/senior/{seniorId}/photo").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->
