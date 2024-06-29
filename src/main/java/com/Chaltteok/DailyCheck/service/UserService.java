@@ -20,8 +20,13 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
+<<<<<<< HEAD
     public long save(RegisterDTO dto){
         return userRepository.save(UserEntity.builder()
+=======
+    public int save(RegisterDTO dto){
+        return (int) userRepository.save(UserEntity.builder()
+>>>>>>> origin/main
                 .name(dto.getName())
                 .password(bCryptPasswordEncoder.encode(dto.getPassword()))
                 .address(dto.getAddress())
