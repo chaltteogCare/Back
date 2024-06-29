@@ -1,6 +1,7 @@
 package com.Chaltteok.DailyCheck.service;
 
-import com.Chaltteok.DailyCheck.dto.DataUsageDTO;
+import com.Chaltteok.DailyCheck.dto.DataUsageDTORequest;
+import com.Chaltteok.DailyCheck.dto.DataUsageDTOResponse;
 import com.Chaltteok.DailyCheck.entity.DataUsageEntity;
 import com.Chaltteok.DailyCheck.entity.SeniorEntity;
 import com.Chaltteok.DailyCheck.repository.DataUsageRepository;
@@ -17,30 +18,30 @@ public class DataUsageService {
     private final DataUsageRepository dataUsageRepository;
     private final SeniorRepository seniorRepository;
 
-    public long save(DataUsageDTO dataUsageDTO) {
-        SeniorEntity senior = seniorRepository.findById(dataUsageDTO.getSeniorId())
+    public long save(DataUsageDTORequest request) {
+        SeniorEntity senior = seniorRepository.findById(request.getSeniorId())
                 .orElseThrow(() -> new IllegalArgumentException("노인을 찾을 수 없습니다."));
         DataUsageEntity dataUsageEntity = DataUsageEntity.builder()
                 .senior(senior)
-                .date(dataUsageDTO.getDate())
-                .phoneUsage(dataUsageDTO.getPhoneUsage())
-                .waterUsage(dataUsageDTO.getWaterUsage())
-                .elecUsage(dataUsageDTO.getElecUsage())
-                .status(dataUsageDTO.getStatus())
+                .date(request.getDate())
+                .phoneUsage(request.getPhoneUsage())
+                .waterUsage(request.getWaterUsage())
+                .elecUsage(request.getElecUsage())
+                .status(request.getStatus())
                 .build();
         return dataUsageRepository.save(dataUsageEntity).getId();
     }
 
-    public DataUsageDTO findById(long id) {
+    public DataUsageDTOResponse findById(long id) {
         DataUsageEntity dataUsage = dataUsageRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("해당 데이터 기록이 없습니다~"));
-        return new DataUsageDTO(dataUsage.getSenior().getId(), dataUsage.getDate(), dataUsage.getPhoneUsage(), dataUsage.getWaterUsage(), dataUsage.getElecUsage(), dataUsage.getStatus());
+        return new DataUsageDTOResponse(dataUsage.getSenior().getId(), dataUsage.getDate(), dataUsage.getPhoneUsage(), dataUsage.getWaterUsage(), dataUsage.getElecUsage(), dataUsage.getStatus());
     }
 
-    public List<DataUsageDTO> findBySeniorId(long SeniorId) {
+    public List<DataUsageDTOResponse> findBySeniorId(long SeniorId) {
         List<DataUsageEntity> dataUsages = dataUsageRepository.findBySeniorId(SeniorId);
         return dataUsages.stream()
-                .map(dataUsage -> new DataUsageDTO(
+                .map(dataUsage -> new DataUsageDTOResponse(
                         dataUsage.getSenior().getId(),
                         dataUsage.getDate(),
                         dataUsage.getPhoneUsage(),
@@ -51,28 +52,28 @@ public class DataUsageService {
                 .collect(Collectors.toList());
     }
 
-    public void update(Long id, DataUsageDTO dataUsageDTO) {
+    public void update(Long id, DataUsageDTORequest request) {
         DataUsageEntity dataUsage = dataUsageRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("해당 데이터 기록이 없습니다~"));
-        if (dataUsageDTO.getSeniorId() != 0) {
-            SeniorEntity senior = seniorRepository.findById(dataUsageDTO.getSeniorId())
+        if (request.getSeniorId() != 0) {
+            SeniorEntity senior = seniorRepository.findById(request.getSeniorId())
                     .orElseThrow(() -> new IllegalArgumentException("노인을 찾을 수 없습니다."));
             dataUsage.setSenior(senior);
         }
-        if(dataUsageDTO.getDate()!=null){
-            dataUsage.setDate(dataUsageDTO.getDate());
+        if(request.getDate()!=null){
+            dataUsage.setDate(request.getDate());
         }
-        if(dataUsageDTO.getPhoneUsage()!=0){
-            dataUsage.setPhoneUsage(dataUsageDTO.getPhoneUsage());
+        if(request.getPhoneUsage()!=0){
+            dataUsage.setPhoneUsage(request.getPhoneUsage());
         }
-        if(dataUsageDTO.getWaterUsage()!=0){
-            dataUsage.setWaterUsage(dataUsageDTO.getWaterUsage());
+        if(request.getWaterUsage()!=0){
+            dataUsage.setWaterUsage(request.getWaterUsage());
         }
-        if(dataUsageDTO.getElecUsage()!=0){
-            dataUsage.setElecUsage(dataUsageDTO.getElecUsage());
+        if(request.getElecUsage()!=0){
+            dataUsage.setElecUsage(request.getElecUsage());
         }
-        if(dataUsageDTO.getStatus()!=null){
-            dataUsage.setStatus(dataUsageDTO.getStatus());
+        if(request.getStatus()!=null){
+            dataUsage.setStatus(request.getStatus());
         }
         dataUsageRepository.save(dataUsage);
     }

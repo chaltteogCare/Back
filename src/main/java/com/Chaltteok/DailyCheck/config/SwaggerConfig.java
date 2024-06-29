@@ -47,18 +47,18 @@ public class SwaggerConfig {
                 .version("1.0.0"); // API의 버전
     }
 
-    @Bean
-    public OperationCustomizer customizeMultipart() {
-        return (operation, handlerMethod) -> {
-            if (handlerMethod.hasMethodAnnotation(PostMapping.class)) {
-                RequestBody requestBody = new RequestBody()
-                        .content(new Content()
-                                .addMediaType(org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE, new MediaType()
-                                        .schema(new Schema<>().type("object")
-                                                .addProperties("file", new Schema<>().type("string").format("binary")))));
-                operation.requestBody(requestBody);
-            }
-            return operation;
-        };
-    }
+//    @Bean
+//    public OperationCustomizer customizeMultipart() {
+//        return (operation, handlerMethod) -> {
+//            if (handlerMethod.hasMethodAnnotation(PostMapping.class)) {
+//                RequestBody requestBody = new RequestBody()
+//                        .content(new Content()
+//                                .addMediaType(org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE, new MediaType()
+//                                        .schema(new Schema<>().type("object")
+//                                                .addProperties("file", new Schema<>().type("string").format("binary")))));
+//                operation.requestBody(requestBody);
+//            }
+//            return operation;
+//        };
+//    }
 }

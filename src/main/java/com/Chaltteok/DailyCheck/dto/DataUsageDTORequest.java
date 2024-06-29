@@ -5,9 +5,7 @@ import lombok.*;
 import java.util.Date;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class DataUsageDTO {
+public class DataUsageDTORequest {
     private long seniorId;
     private Date date;
     private int phoneUsage;
