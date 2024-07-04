@@ -1,12 +1,12 @@
 package com.Chaltteok.DailyCheck.controller;
 
-import com.Chaltteok.DailyCheck.dto.SeniorDTO;
+import com.Chaltteok.DailyCheck.dto.SeniorDTORequest;
+import com.Chaltteok.DailyCheck.dto.SeniorDTOResponse;
 import com.Chaltteok.DailyCheck.entity.SeniorEntity;
 import com.Chaltteok.DailyCheck.service.SeniorService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -24,20 +24,20 @@ public class SeniorController {
     private final SeniorService seniorService;
 
     @GetMapping("/{seniorId}")
-    public ResponseEntity<SeniorEntity> getSenior(@PathVariable long seniorId) {
-        SeniorEntity senior = seniorService.getSenior(seniorId);
+    public ResponseEntity<SeniorDTOResponse> getSenior(@PathVariable long seniorId) {
+        SeniorDTOResponse senior = seniorService.getSenior(seniorId);
         return ResponseEntity.ok(senior);
     }
 
     @PostMapping
-    public ResponseEntity<SeniorEntity> addSenior(@RequestParam long UserId, @RequestBody SeniorDTO seniorDTO) {
-        SeniorEntity newSenior = seniorService.addSenior(UserId, seniorDTO);
+    public ResponseEntity<SeniorDTOResponse> addSenior(@RequestParam long UserId, @RequestBody SeniorDTORequest seniorDTORequest) {
+        SeniorDTOResponse newSenior = seniorService.addSenior(UserId, seniorDTORequest);
         return ResponseEntity.ok(newSenior);
     }
 
     @PatchMapping("/{seniorId}")
-    public ResponseEntity<SeniorEntity> updateSenior(@PathVariable long seniorId, @RequestBody SeniorDTO seniorDTO) {
-        SeniorEntity updatedSenior = seniorService.updateSenior(seniorId, seniorDTO);
+    public ResponseEntity<SeniorDTOResponse> updateSenior(@PathVariable long seniorId, @RequestBody SeniorDTORequest seniorDTORequest) {
+        SeniorDTOResponse updatedSenior = seniorService.updateSenior(seniorId, seniorDTORequest);
         return ResponseEntity.ok(updatedSenior);
     }
 

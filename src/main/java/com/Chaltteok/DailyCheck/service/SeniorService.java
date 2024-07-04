@@ -1,7 +1,8 @@
 package com.Chaltteok.DailyCheck.service;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import com.Chaltteok.DailyCheck.dto.SeniorDTO;
+import com.Chaltteok.DailyCheck.dto.SeniorDTORequest;
+import com.Chaltteok.DailyCheck.dto.SeniorDTOResponse;
 import com.Chaltteok.DailyCheck.entity.SeniorEntity;
 import com.Chaltteok.DailyCheck.entity.UserEntity;
 import com.Chaltteok.DailyCheck.exception.ResourceNotFoundException;
@@ -18,8 +19,6 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.aspectj.weaver.tools.cache.SimpleCacheFactory.path;
-
 @AllArgsConstructor
 @Service
 public class SeniorService {
@@ -28,40 +27,43 @@ public class SeniorService {
     private final UserRepository userRepository;
     private final FileUploadService fileUploadService;
 
-    public SeniorEntity getSenior(long seniorId) {
-        return seniorRepository.findById(seniorId)
+    public SeniorDTOResponse getSenior(long seniorId) {
+        SeniorEntity seniorEntity = seniorRepository.findById(seniorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Senior not found with id " + seniorId));
+        return SeniorDTOResponse.fromEntity(seniorEntity);
     }
 
-    public SeniorEntity addSenior(long userId, SeniorDTO seniorDTO) {
+    public SeniorDTOResponse addSenior(long userId, SeniorDTORequest seniorDTORequest) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id " + userId));
-
-        SeniorEntity seniorEntity = seniorDTO.toEntity(user);
-        return seniorRepository.save(seniorEntity);
+        SeniorEntity seniorEntity = seniorDTORequest.toEntity(user);
+        SeniorEntity savedSenior = seniorRepository.save(seniorEntity);
+        return SeniorDTOResponse.fromEntity(savedSenior);
     }
 
-    public SeniorEntity updateSenior(long seniorId, SeniorDTO seniorDTO) {
+    public SeniorDTOResponse updateSenior(long seniorId, SeniorDTORequest seniorDTORequest) {
         SeniorEntity senior = seniorRepository.findById(seniorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Senior not found with id " + seniorId));
 
-        UserEntity user = userRepository.findById(seniorDTO.getUserId())
-                .orElseThrow(() -> new UserNotFoundException("User not found with id " + seniorDTO.getUserId()));
+        senior.setName(seniorDTORequest.getName());
+        senior.setAge(seniorDTORequest.getAge());
+        senior.setAddress(seniorDTORequest.getAddress());
+        senior.setTelephoneNumber(seniorDTORequest.getTelephoneNumber());
+        senior.setNotes(seniorDTORequest.getNotes());
 
-        senior.setUser(user);
-        senior.setName(seniorDTO.getName());
-        senior.setAge(seniorDTO.getAge());
-        senior.setAddress(seniorDTO.getAddress());
-        senior.setTelephoneNumber(seniorDTO.getTelephoneNumber());
-        senior.setNotes(seniorDTO.getNotes());
-        // senior.setPhotoUrl(seniorDTO.getPhotoUrl());
-        return seniorRepository.save(senior);
+        SeniorEntity updatedSenior = seniorRepository.save(senior);
+        return SeniorDTOResponse.fromEntity(updatedSenior);
     }
 
     public void deleteSenior(long seniorId) {
         SeniorEntity senior = seniorRepository.findById(seniorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Senior not found with id " + seniorId));
         seniorRepository.deleteById(seniorId);
+    }
+
+    public SeniorEntity findSeniorEntityById(long seniorId) {
+        return seniorRepository.findById(seniorId)
+                .orElseThrow(() -> new ResourceNotFoundException("Senior not found with id " + seniorId));
     }
 
     public String updateSeniorPhoto(long seniorId, MultipartFile file) {
@@ -77,7 +79,7 @@ public class SeniorService {
 
     public byte[] getSeniorPhoto(long seniorId) {
         try {
-            SeniorEntity senior = getSenior(seniorId);
+            SeniorEntity senior = this.findSeniorEntityById(seniorId);
             String photoUrl = senior.getPhotoUrl();
 
             String decodedPath = URLDecoder.decode(photoUrl, StandardCharsets.UTF_8.name());

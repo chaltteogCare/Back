@@ -15,7 +15,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ScheduleDTO {
+public class ScheduleDTORequest {
     private long userId;
     private long seniorId;
     private Date date;
