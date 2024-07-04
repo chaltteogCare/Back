@@ -1,6 +1,7 @@
 package com.Chaltteok.DailyCheck.service;
 
-import com.Chaltteok.DailyCheck.dto.ScheduleDTO;
+import com.Chaltteok.DailyCheck.dto.ScheduleDTORequest;
+import com.Chaltteok.DailyCheck.dto.ScheduleDTOResponse;
 import com.Chaltteok.DailyCheck.entity.ScheduleEntity;
 import com.Chaltteok.DailyCheck.entity.SeniorEntity;
 import com.Chaltteok.DailyCheck.entity.UserEntity;
@@ -13,6 +14,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -22,42 +24,44 @@ public class ScheduleService {
     private final UserRepository userRepository;
     private final SeniorRepository seniorRepository;
 
-    public List<ScheduleEntity> getAllSchedules(long userId) {
-        if (!userRepository.existsById(userId)){
+    public List<ScheduleDTOResponse> getAllSchedules(long userId) {
+        if (!userRepository.existsById(userId)) {
             throw new UserNotFoundException("User not found with id " + userId);
         }
-        return scheduleRepository.findByUser_Id(userId);
+        List<ScheduleEntity> scheduleEntities = scheduleRepository.findByUser_Id(userId);
+        return scheduleEntities.stream().map(ScheduleDTOResponse::fromEntity).collect(Collectors.toList());
     }
 
-    public ScheduleEntity getSchedule(long scheduleId) {
-        return scheduleRepository.findById(scheduleId)
-                .orElseThrow(()->new ResourceNotFoundException("Schedule not found with id " + scheduleId));
+    public ScheduleDTOResponse getSchedule(long scheduleId) {
+        ScheduleEntity scheduleEntity = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Schedule not found with id " + scheduleId));
+        return ScheduleDTOResponse.fromEntity(scheduleEntity);
     }
 
-    public ScheduleEntity addSchedule(long userId, ScheduleDTO scheduleDTO) {
+    public ScheduleDTOResponse addSchedule(long userId, ScheduleDTORequest scheduleDTORequest) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id " + userId));
-        SeniorEntity senior = seniorRepository.findById(scheduleDTO.getSeniorId())
-                .orElseThrow(() -> new ResourceNotFoundException("Senior not found with id " + scheduleDTO.getSeniorId()));
+        SeniorEntity senior = seniorRepository.findById(scheduleDTORequest.getSeniorId())
+                .orElseThrow(() -> new ResourceNotFoundException("Senior not found with id " + scheduleDTORequest.getSeniorId()));
 
-        ScheduleEntity scheduleEntity = scheduleDTO.toEntity(user, senior);
-        return scheduleRepository.save(scheduleEntity);
+        ScheduleEntity scheduleEntity = scheduleDTORequest.toEntity(user, senior);
+        ScheduleEntity savedSchedule = scheduleRepository.save(scheduleEntity);
+        return ScheduleDTOResponse.fromEntity(savedSchedule);
     }
 
-    public ScheduleEntity updateSchedule(long scheduleId, ScheduleDTO scheduleDTO) {
+    public ScheduleDTOResponse updateSchedule(long scheduleId, ScheduleDTORequest scheduleDTORequest) {
         ScheduleEntity schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Schedule not found with id " + scheduleId));
 
-        UserEntity user = userRepository.findById(scheduleDTO.getUserId())
-                .orElseThrow(() -> new UserNotFoundException("User not found with id " + scheduleDTO.getUserId()));
+        SeniorEntity senior = seniorRepository.findById(scheduleDTORequest.getSeniorId())
+                .orElseThrow(() -> new ResourceNotFoundException("Senior not found with id " + scheduleDTORequest.getSeniorId()));
 
-        SeniorEntity senior = seniorRepository.findById(scheduleDTO.getSeniorId())
-                .orElseThrow(() -> new ResourceNotFoundException("Senior not found with id " + scheduleDTO.getSeniorId()));
+        schedule.setSenior(senior);
+        schedule.setDate(scheduleDTORequest.getDate());
+        schedule.setScheduleTime(scheduleDTORequest.getScheduleTime());
 
-        schedule.setSenior(seniorRepository.findById(scheduleDTO.getSeniorId()).orElseThrow(()->new ResourceNotFoundException("Senior not found with id" + scheduleDTO.getSeniorId())));
-        schedule.setDate(scheduleDTO.getDate());
-        schedule.setScheduleTime(scheduleDTO.getScheduleTime());
-        return scheduleRepository.save(schedule);
+        ScheduleEntity updatedSchedule = scheduleRepository.save(schedule);
+        return ScheduleDTOResponse.fromEntity(updatedSchedule);
     }
 
     public void deleteSchedule(long scheduleId) {

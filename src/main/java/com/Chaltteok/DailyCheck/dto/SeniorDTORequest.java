@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SeniorDTO {
+public class SeniorDTORequest {
     private long id;
     private long userId;
     private String name;

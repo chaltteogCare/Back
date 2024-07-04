@@ -1,6 +1,7 @@
 package com.Chaltteok.DailyCheck.controller;
 
-import com.Chaltteok.DailyCheck.dto.SeniorDTO;
+import com.Chaltteok.DailyCheck.dto.SeniorDTORequest;
+import com.Chaltteok.DailyCheck.dto.SeniorDTOResponse;
 import com.Chaltteok.DailyCheck.entity.SeniorEntity;
 import com.Chaltteok.DailyCheck.service.SeniorService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -23,20 +24,20 @@ public class SeniorController {
     private final SeniorService seniorService;
 
     @GetMapping("/{seniorId}")
-    public ResponseEntity<SeniorEntity> getSenior(@PathVariable long seniorId) {
-        SeniorEntity senior = seniorService.getSenior(seniorId);
+    public ResponseEntity<SeniorDTOResponse> getSenior(@PathVariable long seniorId) {
+        SeniorDTOResponse senior = seniorService.getSenior(seniorId);
         return ResponseEntity.ok(senior);
     }
 
     @PostMapping
-    public ResponseEntity<SeniorEntity> addSenior(@RequestParam long UserId, @RequestBody SeniorDTO seniorDTO) {
-        SeniorEntity newSenior = seniorService.addSenior(UserId, seniorDTO);
+    public ResponseEntity<SeniorDTOResponse> addSenior(@RequestParam long UserId, @RequestBody SeniorDTORequest seniorDTORequest) {
+        SeniorDTOResponse newSenior = seniorService.addSenior(UserId, seniorDTORequest);
         return ResponseEntity.ok(newSenior);
     }
 
     @PatchMapping("/{seniorId}")
-    public ResponseEntity<SeniorEntity> updateSenior(@PathVariable long seniorId, @RequestBody SeniorDTO seniorDTO) {
-        SeniorEntity updatedSenior = seniorService.updateSenior(seniorId, seniorDTO);
+    public ResponseEntity<SeniorDTOResponse> updateSenior(@PathVariable long seniorId, @RequestBody SeniorDTORequest seniorDTORequest) {
+        SeniorDTOResponse updatedSenior = seniorService.updateSenior(seniorId, seniorDTORequest);
         return ResponseEntity.ok(updatedSenior);
     }
 
@@ -48,12 +49,13 @@ public class SeniorController {
 
     // 이미지 처리
 
-    @PostMapping("/{seniorId}/photo")
+    @PostMapping(value = "/{seniorId}/photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(value = "Update Senior Photo", notes = "Upload a photo for a senior")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "seniorId", value = "Senior ID", required = true, dataType = "long", paramType = "path"),
-            @ApiImplicitParam(name = "file", value = "Photo file", required = true, dataType = "file", paramType = "form")
+            @ApiImplicitParam(name = "seniorId", value = "Senior ID", required = true, dataTypeClass = Long.class, paramType = "path"),
+            @ApiImplicitParam(name = "file", value = "Photo file", required = true, dataTypeClass = MultipartFile.class, paramType = "form")
     })
+
     public ResponseEntity<String> updateSeniorPhoto(@PathVariable long seniorId, @RequestParam("file") MultipartFile file) {
         String photoUrl = seniorService.updateSeniorPhoto(seniorId, file);
         return ResponseEntity.ok(photoUrl);
