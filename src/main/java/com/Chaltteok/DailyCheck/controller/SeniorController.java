@@ -6,6 +6,7 @@ import com.Chaltteok.DailyCheck.service.SeniorService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -48,12 +49,13 @@ public class SeniorController {
 
     // 이미지 처리
 
-    @PostMapping("/{seniorId}/photo")
+    @PostMapping(value = "/{seniorId}/photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(value = "Update Senior Photo", notes = "Upload a photo for a senior")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "seniorId", value = "Senior ID", required = true, dataType = "long", paramType = "path"),
-            @ApiImplicitParam(name = "file", value = "Photo file", required = true, dataType = "file", paramType = "form")
+            @ApiImplicitParam(name = "seniorId", value = "Senior ID", required = true, dataTypeClass = Long.class, paramType = "path"),
+            @ApiImplicitParam(name = "file", value = "Photo file", required = true, dataTypeClass = MultipartFile.class, paramType = "form")
     })
+
     public ResponseEntity<String> updateSeniorPhoto(@PathVariable long seniorId, @RequestParam("file") MultipartFile file) {
         String photoUrl = seniorService.updateSeniorPhoto(seniorId, file);
         return ResponseEntity.ok(photoUrl);
