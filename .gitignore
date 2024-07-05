@@ -38,4 +38,3 @@ out/
 
 ### Custom settings ###
 application.yml
-!src/main/resources/application.yml
