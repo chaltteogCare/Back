@@ -21,14 +21,9 @@ public class JwtTokenProvider {
     private final Key key;
     private final long accessTokenExpTime = 86400000;
 
-    public JwtTokenProvider(
-//            @Value("${jwt.secret}") String secretKey,
-//            @Value("${jwt.expiration_time}") long accessTokenExpTime
-    ) {
-            String secretKey = "64461f01e1af406da538b9c48d801ce59142452199ff112fb5404c8e7e98e3ff";
-            byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-            this.key = Keys.hmacShaKeyFor(keyBytes);
-            //this.accessTokenExpTime = accessTokenExpTime;
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String createAccessToken(LoginDTO loginDTO) {
@@ -75,7 +70,6 @@ public class JwtTokenProvider {
             log.info("JWT claims string is empty", e);
             throw new JwtValidationException("Invalid JWT token", e);
         }
-        //return false;
     }
 
     public Claims parseClaims(String accessToken){
